@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import Webcam from "react-webcam";
 // function App() {
@@ -20,23 +20,6 @@ class App extends React.Component {
       contacts : []
     };
   }
-
-  handleClick = () => {
-    // const screenshot = this.webcam.getScreenshot();
-    // this.setState({ screenshot });
-    setInterval( () => {
-      this.setState({
-        screenshot : this.webcam.getScreenshot()
-      })
-    },5000)
-  }
-  componentDidMount() {
-    setInterval( () => {
-      this.setState({
-        curTime : new Date().toLocaleString()
-      })
-    },1000)
-  }
   restAPIcall= () => {
     fetch('http://jsonplaceholder.typicode.com/users')
     .then(res => res.json())
@@ -46,6 +29,24 @@ class App extends React.Component {
     })
     .catch(console.log)
   }
+  handleClick = () => {
+    // const screenshot = this.webcam.getScreenshot();
+    // this.setState({ screenshot });
+    setInterval( () => {
+      this.setState({
+        screenshot : this.webcam.getScreenshot()
+      });
+      this.restAPIcall();
+    },5000)
+  }
+  componentDidMount() {
+    setInterval( () => {
+      this.setState({
+        curTime : new Date().toLocaleString()
+      })
+    },1000)
+  }
+  
   render() {
     return (
       <div className="App">
@@ -115,7 +116,6 @@ class App extends React.Component {
           <div className='screenshots'>
             <div className='controls'>
               <button onClick={this.handleClick}>capture every 5sec</button>
-              <button onClick={this.restAPIcall}>restAPIcall</button>
             </div>
             {this.state.screenshot ? <img src={this.state.screenshot} /> : null}
           </div>
