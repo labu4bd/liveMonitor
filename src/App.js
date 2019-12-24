@@ -1,15 +1,9 @@
 import React from 'react';
-// import logo from './logo.svg';
+import logo from './logo.svg';
+import logo1 from './heartAttack1.jpg';
 import './App.css';
 import Webcam from "react-webcam";
-// function App() {
-//   return (
-//     <div className="App">
-//       <div id="webCam"></div>
-//       <div id="webCamImage"></div>
-//     </div>
-//   );
-// }
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -29,14 +23,45 @@ class App extends React.Component {
     })
     .catch(console.log)
   }
+  googleImageCall= () =>{
+    fetch('https://vision.googleapis.com/v1p4beta1/images:annotate', {
+      method: 'POST',
+      headers: {
+        'key' : 'AIzaSyA_vnw7F3FFDo8BqG53VAW_Zq4sGmLVAi0',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "requests": [
+          {
+            "image" : {
+              "source": {
+                "imageUri": this.state.screenshot
+              }
+            },
+            "features": [
+              {
+                "type": "WEB_DETECTION"
+              }
+            ]
+            // "image" : "https://media.graytvinc.com/images/690*388/HEART+ATTACK+CHEST+COMPRESSIONS+IMAGE.jpg"
+          }
+        ]
+      })
+    }).then(response => {
+        console.log("response",response)
+    })
+    .catch(error =>{
+        console.log("error",error)
+    })
+  }
   handleClick = () => {
-    // const screenshot = this.webcam.getScreenshot();
-    // this.setState({ screenshot });
     setInterval( () => {
       this.setState({
         screenshot : this.webcam.getScreenshot()
       });
-      this.restAPIcall();
+      // this.restAPIcall();
+      this.googleImageCall();
     },5000)
   }
   componentDidMount() {
@@ -115,7 +140,8 @@ class App extends React.Component {
           <h2>Screenshots</h2>
           <div className='screenshots'>
             <div className='controls'>
-              <button onClick={this.handleClick}>capture every 5sec</button>
+              <button onClick={this.handleClick}>capture every 5 seconds</button>
+              {/* <button onClick={this.googleImageCall}>google api</button> */}
             </div>
             {this.state.screenshot ? <img src={this.state.screenshot} /> : null}
           </div>
